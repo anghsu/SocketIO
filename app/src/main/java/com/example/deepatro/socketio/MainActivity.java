@@ -1,34 +1,31 @@
 package com.example.deepatro.socketio;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-
 public class MainActivity extends ActionBarActivity {
     private SharedPreferences sp;
-    private Socket socket;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = new Intent(this, LoginInfo.class);
+        startActivity(i);
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
+
+        Log.d("Socket host", sp.getString("Hostname", ""));
+        Log.d("Socket user", sp.getString("Username", ""));
+        startService(new Intent(this, SocketListenerService.class));
+
+
         Intent i = new Intent(this, LoginInfo.class);
         startActivity(i);
         sp = getSharedPreferences("sp", MODE_PRIVATE);
@@ -45,7 +42,6 @@ public class MainActivity extends ActionBarActivity {
         socket.connect();
         socket.on("reservations", notifyIncomingMessages);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,30 +65,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Emitter.Listener notifyIncomingMessages = new Emitter.Listener(){
-        @Override
-        public  void  call(final Object... args){
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String message;
-                    try {
-                        message = data.getString("event");
-                        Log.d("message is", message);
-
-                    } catch (JSONException e) {
-                        return;
-                    }
-
-                }
-            });
-        }
-    };
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        socket.disconnect();
     }
 }
