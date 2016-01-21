@@ -1,10 +1,17 @@
 package com.example.deepatro.socketio;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -15,25 +22,30 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 public class MainActivity extends ActionBarActivity {
+    private SharedPreferences sp;
+    private Socket socket;
 
 
-    private Socket socket ;
-    {
-        try{
-            socket = IO.socket("http://laas-deepatro.cisco.com:8000");
-            Log.d("socket instance", "created");
-        }catch(URISyntaxException e){
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Intent i = new Intent(this, LoginInfo.class);
+        startActivity(i);
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
+
+        Log.d("Socket host", sp.getString("Hostname", ""));
+        Log.d("Socket user", sp.getString("Username", ""));
+        try {
+            socket = IO.socket("http://" + sp.getString("Hostname", "") + ":8000");
+            Log.d("socket instance", "created");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         Log.d("socket instance", "connecting");
         socket.connect();
         socket.on("reservations", notifyIncomingMessages);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,12 +78,13 @@ public class MainActivity extends ActionBarActivity {
                     JSONObject data = (JSONObject) args[0];
                     String message;
                     try {
-                        message = data.getString("message");
+                        message = data.getString("event");
+                        Log.d("message is", message);
 
                     } catch (JSONException e) {
                         return;
                     }
-                    Log.d("message is", message);
+
                 }
             });
         }
