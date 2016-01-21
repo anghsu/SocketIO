@@ -1,38 +1,20 @@
 package com.example.deepatro.socketio;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
 
 public class MainActivity extends ActionBarActivity {
 
 
-    private Socket socket ;
-    {
-        try{
-            socket = IO.socket("http://laas-deepatro.cisco.com:8000");
-            Log.d("socket instance", "created");
-        }catch(URISyntaxException e){
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Log.d("socket instance", "connecting");
-        socket.connect();
-        socket.on("reservations", notifyIncomingMessages);
+        startService(new Intent(this, SocketListenerService.class));
+
+
     }
 
     @Override
@@ -57,29 +39,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Emitter.Listener notifyIncomingMessages = new Emitter.Listener(){
-        @Override
-        public  void  call(final Object... args){
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String message;
-                    try {
-                        message = data.getString("message");
-
-                    } catch (JSONException e) {
-                        return;
-                    }
-                    Log.d("message is", message);
-                }
-            });
-        }
-    };
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        socket.disconnect();
     }
 }
