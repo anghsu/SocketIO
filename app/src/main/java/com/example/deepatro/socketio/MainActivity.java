@@ -1,20 +1,35 @@
 package com.example.deepatro.socketio;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+
 public class MainActivity extends ActionBarActivity {
+    private SharedPreferences sp;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivity(new Intent(this, LoginInfo.class));
         startService(new Intent(this, SocketListenerService.class));
+    }
 
+    protected void onStart(Bundle savedInstanceState) {
+        Log.d("START", "S");
+        super.onStart();
+        startActivity(new Intent(this, LoginInfo.class));
+    }
 
+    protected void onResume(Bundle savedInstanceState) {
+        Log.d("RESUME", "S");
+        super.onResume();
+        startActivity(new Intent(this, LoginInfo.class));
     }
 
     @Override

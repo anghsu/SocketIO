@@ -6,6 +6,7 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -20,19 +21,25 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 public class SocketListenerService extends Service {
+    private SharedPreferences sp;
+    private String host;
+    private int notifyId;
+    private String user;
+    private Socket socket;
+    
     public SocketListenerService() {
     }
 
-    private int notifyId;
-    private String user;
-    private String laas_server;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         notifyId = 1;
         user ="greggmi";
-        laas_server = "laas-greggmi";
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
+        host = sp.getString("Hostname", "");
+        Log.d("Socket host", host);
         startSocket();
+
         Log.d("socket instance", "connecting");
         socket.connect();
         socket.on("reservations", notifyIncomingMessages);
@@ -40,12 +47,11 @@ public class SocketListenerService extends Service {
         return Service.START_REDELIVER_INTENT;
     }
 
-    private Socket socket;
-
     private void startSocket(){
         try {
-            socket = IO.socket("http://" + laas_server + ".cisco.com:8000");
-            Log.d("socket instance", "created");
+            String url = "http://" + host + ":8000";
+            socket = IO.socket(url);
+            Log.d("socket instance", "created " + url);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
