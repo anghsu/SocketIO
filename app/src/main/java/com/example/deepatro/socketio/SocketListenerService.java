@@ -2,6 +2,7 @@ package com.example.deepatro.socketio;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -15,12 +16,18 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 public class SocketListenerService extends Service {
+    private SharedPreferences sp;
+    private String host;
+
     public SocketListenerService() {
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
+        Log.d("Socket host", sp.getString("Hostname", ""));
+        host = sp.getString("Hostname", "");
 
         Log.d("socket instance", "connecting");
         socket.connect();
@@ -32,7 +39,7 @@ public class SocketListenerService extends Service {
     private Socket socket;
     {
         try {
-            socket = IO.socket("http://laas-greggmi.cisco.com:8000");
+            socket = IO.socket("http://" + host + ":8000");
             Log.d("socket instance", "created");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);

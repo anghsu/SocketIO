@@ -15,20 +15,22 @@ import android.widget.EditText;
 public class LoginInfo extends Activity {
     EditText mNameText;
     EditText mHostname;
+    private String host;
+    private String username;
     private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Check for Previous Saved Settings
-        Log.d("here", "FD");
         LoadLogin();
-        Log.d("FLJ", "DF");
         //Otherwise ask for New settings
-        if (mNameText.getText().toString().isEmpty() || mHostname.getText().toString().isEmpty()){
+        Log.d("PREV USER", username);
+        Log.d("PREV HOST", host);
+        if (username.isEmpty() || host.isEmpty()){
             setContentView(R.layout.activity_login);
             mNameText = (EditText) findViewById(R.id.username);
-            mHostname = (EditText) findViewById(R.id.Hostname);
+            mHostname = (EditText) findViewById(R.id.hostname);
 
             Button submit = (Button) findViewById(R.id.enter);
             submit.setOnClickListener(new View.OnClickListener() {
@@ -37,23 +39,29 @@ public class LoginInfo extends Activity {
                     //Save Settings
                     SaveLogin("Username", mNameText.getText().toString());
                     SaveLogin("Hostname", mHostname.getText().toString());
+                    LoadLogin();
+                    Log.d("SAVED HOST", host);
+                    Log.d("SAVED USER", username);
+                    return;
                 }
             });
         }
+        finish();
     }
 
     private void LoadLogin(){
         //load anything previously saved, otherwise return None
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mNameText.setText(sp.getString("Username", ""));
-        mHostname.setText(sp.getString("Hostname", ""));
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
+        username = sp.getString("Username", "");
+        host = sp.getString("Hostname", "");
     }
 
     private void SaveLogin(String key, String value) {
         //Overwrite any previously saved settings
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp = getSharedPreferences("sp", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString(key, value);
         edit.commit();
     }
+
 }

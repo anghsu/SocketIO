@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Username"
         android:ems="10"
         android:id="@+id/username"
         android:layout_alignParentTop="true"
@@ -41,20 +40,19 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/Hostname"
+        android:id="@+id/hostname"
         android:layout_below="@+id/textView2"
         android:layout_alignStart="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2"
-        android:text="Hostname" />
+        android:layout_alignEnd="@+id/textView2" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enter"
         android:id="@+id/enter"
-        android:layout_below="@+id/Hostname"
-        android:layout_alignStart="@+id/Hostname"
-        android:layout_alignEnd="@+id/Hostname" />
+        android:layout_below="@+id/hostname"
+        android:layout_alignStart="@+id/hostname"
+        android:layout_alignEnd="@+id/hostname" />
 
     <TextView
         android:layout_width="wrap_content"

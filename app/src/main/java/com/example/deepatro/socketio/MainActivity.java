@@ -6,41 +6,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+
 
 public class MainActivity extends ActionBarActivity {
-    private SharedPreferences sp;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = new Intent(this, LoginInfo.class);
-        startActivity(i);
-        sp = getSharedPreferences("sp", MODE_PRIVATE);
-
-        Log.d("Socket host", sp.getString("Hostname", ""));
-        Log.d("Socket user", sp.getString("Username", ""));
+        startActivity(new Intent(this, LoginInfo.class));
         startService(new Intent(this, SocketListenerService.class));
-
-
-        Intent i = new Intent(this, LoginInfo.class);
-        startActivity(i);
-        sp = getSharedPreferences("sp", MODE_PRIVATE);
-
-        Log.d("Socket host", sp.getString("Hostname", ""));
-        Log.d("Socket user", sp.getString("Username", ""));
-        try {
-            socket = IO.socket("http://" + sp.getString("Hostname", "") + ":8000");
-            Log.d("socket instance", "created");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        Log.d("socket instance", "connecting");
-        socket.connect();
-        socket.on("reservations", notifyIncomingMessages);
     }
 
     @Override
@@ -68,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onDestroy() {
+        Log.i("DESTROY", "HERE");
         super.onDestroy();
     }
 }
