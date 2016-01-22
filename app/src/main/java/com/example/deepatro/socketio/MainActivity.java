@@ -9,10 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
     private SharedPreferences sp;
+    TextView logdump;
 
 
     @Override
@@ -30,7 +33,17 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        //startService(new Intent(this, SocketListenerService.class));
+        final Button view_log = (Button) findViewById(R.id.viewlog);
+        view_log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("clicked view", "");
+                setContentView(R.layout.activity_log);
+                logdump = (TextView) findViewById(R.id.logdump);
+                //store logdump to be dump of file
+                logdump.setText("BLAHBALHBLAHBHLAHBAL");
+            }
+        });
     }
 
     protected void onStart(Bundle savedInstanceState) {
