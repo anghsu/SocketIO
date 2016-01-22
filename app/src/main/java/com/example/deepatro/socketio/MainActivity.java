@@ -1,82 +1,117 @@
 package com.example.deepatro.socketio;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class MainActivity extends ActionBarActivity {
     private SharedPreferences sp;
-    TextView logdump;
 
+    private ArrayAdapter<String> adapt;
+    private ArrayList<String> logArray;
+    private String filename = "laasng_notify.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         final Button edit_login = (Button) findViewById(R.id.edit_login);
+        final Button view_log = (Button) findViewById(R.id.viewlog);
         edit_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Save Settings
-                Log.d("clicked edit", "");
+                Log.d("clicked edit", "clicked edit");
                 startActivity(new Intent(getApplicationContext(), LoginInfo.class));
 
             }
         });
 
-        final Button view_log = (Button) findViewById(R.id.viewlog);
+
+
         view_log.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("clicked view", "");
+                Log.d("clicked view", "clicked view");
                 setContentView(R.layout.activity_log);
-                logdump = (TextView) findViewById(R.id.logdump);
-                StringBuilder text = new StringBuilder();
-                try {
-                    String filename = "laasng_notify";
-                    File file = new File(filename);
+                ListView loglist = (ListView) findViewById(R.id.loglist);
+                final Button clear_log = (Button) findViewById(R.id.clearLog);
 
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        text.append(line);
-                        text.append('\n');
+                logArray = populate_list(filename);
+
+                adapt = new ArrayAdapter<String>( loglist.getContext(), android.R.layout.simple_list_item_1, logArray);
+                loglist.setAdapter(adapt);
+
+                clear_log.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Clear Log
+                        try{
+                            BufferedOutputStream buf = new BufferedOutputStream(openFileOutput(filename, Context.MODE_PRIVATE));
+                            buf.write(("").getBytes());
+                            buf.flush();
+                            buf.close();
+                        }catch (IOException e){
+                            Log.d("IOError", e.getMessage());
+                        }
+                        ListView loglist = (ListView) findViewById(R.id.loglist);
+                        logArray = populate_list(filename);
+                        adapt = new ArrayAdapter<String>( loglist.getContext(), android.R.layout.simple_list_item_1, logArray);
+                        loglist.setAdapter(adapt);
+
                     }
-                    br.close() ;
-                }catch (IOException e) {
-                    return;
-                }
-                //store logdump to be dump of file
-                logdump.setText(text);
+                });
+
             }
         });
+    }
+
+    private ArrayList<String> populate_list(String filename){
+        try {
+            logArray=new ArrayList<String>();
+
+            BufferedInputStream buf = new BufferedInputStream(openFileInput(filename));
+            Scanner scan = new Scanner(buf).useDelimiter(",|\\n");
+
+            while (scan.hasNext()){
+                Long time = Long.parseLong(scan.next());
+                String topo_name = scan.next();
+                String event = scan.next();
+                String user = scan.next();
+                logArray.add(topo_name +" "+event+" "+user+" ");
+            }
+
+            return logArray;
+        }catch (IOException e) {
+            Log.d("IOError", e.getMessage());
+            return logArray;
+        }
     }
 
     protected void onStart(Bundle savedInstanceState) {
         Log.d("START", "S");
         super.onStart();
-        //startActivity(new Intent(this, LoginInfo.class));
     }
 
     protected void onResume(Bundle savedInstanceState) {
         Log.d("RESUME", "S");
         super.onResume();
-        //startActivity(new Intent(this, LoginInfo.class));
     }
 
     @Override

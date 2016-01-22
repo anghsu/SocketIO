@@ -20,7 +20,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,8 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Calendar;
-
-import static android.system.OsConstants.O_RDWR;
 
 public class SocketListenerService extends Service {
     private SharedPreferences sp;
@@ -39,8 +36,7 @@ public class SocketListenerService extends Service {
     private Socket socket;
 
     File tempFile;
-    private final String TEMP_FILE_NAME = "laasng_notify.txt";
-    private String fileName = TEMP_FILE_NAME;
+    private final String fileName = "laasng_notify.txt";
 
     public SocketListenerService() {
     }
@@ -56,16 +52,6 @@ public class SocketListenerService extends Service {
         user = sp.getString("Username", "");
         Log.d("Socket host", host);
         Log.d("File name is", fileName);
- /*       try{
-            if (!tempFile.exists()) {
-                tempFile.createNewFile();
-                tempFile.setWritable(true);
-                Log.d("File created", fileName);
-            }
-        }
-        catch(IOException e) {
-            Log.d("File exists", fileName);
-        }*/
         startSocket();
 
         Log.d("socket instance", "connecting");
@@ -106,7 +92,7 @@ public class SocketListenerService extends Service {
                     long secs = c.getTimeInMillis();
                     Log.i("seconds", Long.toString(secs));
 
-                    String detail = Long.toString(secs) + topo_name + event + user_name;
+                    String detail = Long.toString(secs) +","+ topo_name +","+ event +","+ user_name;
                     writeIntoFile(fileName, detail);
                     sendNotification(android.R.drawable.ic_menu_view, "LaasNG", message);
                 }else{
@@ -143,7 +129,7 @@ public class SocketListenerService extends Service {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(notifyId ,mBuilder.build());
+        mNotificationManager.notify(notifyId, mBuilder.build());
         notifyId ++;
 
     }
@@ -170,7 +156,7 @@ public class SocketListenerService extends Service {
     public void writeIntoFile(String fileName, String detail){
         FileWriter writer = null;
         try{
-            BufferedOutputStream bwriter = new BufferedOutputStream(openFileOutput(fileName, Context.MODE_PRIVATE));
+            BufferedOutputStream bwriter = new BufferedOutputStream(openFileOutput(fileName, Context.MODE_APPEND));
             //writer = new FileWriter(fileName, true);
             bwriter.write((detail+"\n").getBytes());
             bwriter.flush();

@@ -14,12 +14,12 @@
         android:gravity="center_vertical|center_horizontal" />
 
     <Button
-        android:layout_width="194dp"
+        android:layout_width="201dp"
         android:layout_height="wrap_content"
         android:text="EDIT LOGIN"
         android:id="@+id/edit_login"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.05" />
+        android:layout_weight="0.04" />
 
     <Button
         android:layout_width="201dp"
@@ -27,5 +27,5 @@
         android:text="View Log"
         android:id="@+id/viewlog"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.03" />
+        android:layout_weight="0.04" />
 </LinearLayout>
