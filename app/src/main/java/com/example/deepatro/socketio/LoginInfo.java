@@ -30,13 +30,15 @@ public class LoginInfo extends Activity {
         //Otherwise ask for New settings
         Log.d("PREV USER", username);
         Log.d("PREV HOST", host);
-
+        i = new Intent(this, SocketListenerService.class);
         mNameText = (EditText) findViewById(R.id.username);
         mHostname = (EditText) findViewById(R.id.hostname);
         if (!username.isEmpty() && !host.isEmpty()){
             mNameText.setText(username);
             mHostname.setText(host);
+            startService(i);
         }
+
         Button submit = (Button) findViewById(R.id.enter);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,8 +56,6 @@ public class LoginInfo extends Activity {
             }
         });
 
-        i = new Intent(this, SocketListenerService.class);
-        startService(i);
 
 
     }

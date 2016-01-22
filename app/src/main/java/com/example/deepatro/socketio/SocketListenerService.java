@@ -33,7 +33,7 @@ public class SocketListenerService extends Service {
     private String host;
     private int notifyId;
     private String user;
-    private Socket socket;
+    private static Socket socket;
 
     File tempFile;
     private final String fileName = "laasng_notify.txt";
@@ -43,6 +43,11 @@ public class SocketListenerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (socket != null){
+                if(socket.connected()) {
+                    socket.disconnect();
+                }
+        }
         Log.i("I am called", "called");
         tempFile = new File( fileName);
 
@@ -170,6 +175,14 @@ public class SocketListenerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         socket.disconnect();
+    }
+
+
+    @Override
+    public boolean stopService(Intent intent) {
+        socket.disconnect();
+        return super.stopService(intent);
+
     }
 
     @Override
