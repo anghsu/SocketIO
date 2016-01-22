@@ -48,9 +48,8 @@ public class MainActivity extends ActionBarActivity {
                 logdump = (TextView) findViewById(R.id.logdump);
                 StringBuilder text = new StringBuilder();
                 try {
-                    String dirpath = "DIRECTORY PATH";
-                    String filename = "FILENAME";
-                    File file = new File(dirpath,filename);
+                    String filename = "laasng_notify";
+                    File file = new File(filename);
 
                     BufferedReader br = new BufferedReader(new FileReader(file));
                     String line;

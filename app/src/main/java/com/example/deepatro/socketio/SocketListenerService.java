@@ -34,9 +34,9 @@ public class SocketListenerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         notifyId = 1;
-        user ="greggmi";
         sp = getSharedPreferences("sp", MODE_PRIVATE);
         host = sp.getString("Hostname", "");
+        user = sp.getString("Username", "");
         Log.d("Socket host", host);
         startSocket();
 
