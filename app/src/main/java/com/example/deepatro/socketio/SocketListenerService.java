@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 public class SocketListenerService extends Service {
     private SharedPreferences sp;
     private String host;
+    private Socket socket;
 
     public SocketListenerService() {
     }
@@ -28,15 +29,14 @@ public class SocketListenerService extends Service {
         sp = getSharedPreferences("sp", MODE_PRIVATE);
         host = sp.getString("Hostname", "");
         Log.d("Socket host", host);
-
         Log.d("socket instance", "connecting");
+        startSocket();
         socket.connect();
         socket.on("reservations", notifyIncomingMessages);
-
         return Service.START_REDELIVER_INTENT;
     }
 
-    private Socket socket;
+    private void startSocket()
     {
         try {
             String url = "http://" + host + ":8000";
