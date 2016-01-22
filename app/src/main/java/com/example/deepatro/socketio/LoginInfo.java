@@ -26,28 +26,36 @@ public class LoginInfo extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
         //Check for Previous Saved Settings
         LoadLogin();
         //Otherwise ask for New settings
         Log.d("PREV USER", username);
         Log.d("PREV HOST", host);
-        if (username.isEmpty() || host.isEmpty()){
-            init();
 
+        mNameText = (EditText) findViewById(R.id.username);
+        mHostname = (EditText) findViewById(R.id.hostname);
+        if (!username.isEmpty() && !host.isEmpty()){
+            mNameText.setText(username);
+            mHostname.setText(host);
         }
-        i = new Intent(this, SocketListenerService.class);
-        startService(i);
-        setContentView(R.layout.activity_welcome);
-        Button edit_login = (Button) findViewById(R.id.edit_login);
-        edit_login.setOnClickListener(new View.OnClickListener() {
+        Button submit = (Button) findViewById(R.id.enter);
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Save Settings
-                init();
-
+                SaveLogin("Username", mNameText.getText().toString());
+                SaveLogin("Hostname", mHostname.getText().toString() + ".cisco.com");
+                LoadLogin();
+                Log.d("SAVED HOST", host);
+                Log.d("SAVED USER", username);
+                stopService(i);
+                startService(i);
             }
         });
-        finish();
+
+        i = new Intent(this, SocketListenerService.class);
+        startService(i);
 
     }
 
@@ -56,24 +64,7 @@ public class LoginInfo extends Activity {
     }
 
     private void init() {
-        setContentView(R.layout.activity_login);
-        mNameText = (EditText) findViewById(R.id.username);
-        mHostname = (EditText) findViewById(R.id.hostname);
 
-        Button submit = (Button) findViewById(R.id.enter);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Save Settings
-                SaveLogin("Username", mNameText.getText().toString());
-                SaveLogin("Hostname", mHostname.getText().toString());
-                LoadLogin();
-                Log.d("SAVED HOST", host);
-                Log.d("SAVED USER", username);
-                stopService(i);
-                startService(i);
-            }
-        });
     }
     private void LoadLogin(){
         //load anything previously saved, otherwise return None

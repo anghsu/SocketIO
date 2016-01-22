@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -16,20 +18,31 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(this, LoginInfo.class));
-        startService(new Intent(this, SocketListenerService.class));
+        setContentView(R.layout.activity_welcome);
+        final Button edit_login = (Button) findViewById(R.id.edit_login);
+        edit_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Save Settings
+                Log.d("clicked edit", "");
+                startActivity(new Intent(getApplicationContext(), LoginInfo.class));
+
+            }
+        });
+
+        //startService(new Intent(this, SocketListenerService.class));
     }
 
     protected void onStart(Bundle savedInstanceState) {
         Log.d("START", "S");
         super.onStart();
-        startActivity(new Intent(this, LoginInfo.class));
+        //startActivity(new Intent(this, LoginInfo.class));
     }
 
     protected void onResume(Bundle savedInstanceState) {
         Log.d("RESUME", "S");
         super.onResume();
-        startActivity(new Intent(this, LoginInfo.class));
+        //startActivity(new Intent(this, LoginInfo.class));
     }
 
     @Override

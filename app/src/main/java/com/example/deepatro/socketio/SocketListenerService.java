@@ -26,7 +26,7 @@ public class SocketListenerService extends Service {
     private int notifyId;
     private String user;
     private Socket socket;
-    
+
     public SocketListenerService() {
     }
 
