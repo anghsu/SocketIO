@@ -106,4 +106,12 @@ public class MainActivity extends ActionBarActivity {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        Log.d("message", "backpressed");
+        startActivity(new Intent(this, MainActivity.class));
+    }
 }
