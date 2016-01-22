@@ -26,8 +26,8 @@ public class SocketListenerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         sp = getSharedPreferences("sp", MODE_PRIVATE);
-        Log.d("Socket host", sp.getString("Hostname", ""));
         host = sp.getString("Hostname", "");
+        Log.d("Socket host", host);
 
         Log.d("socket instance", "connecting");
         socket.connect();
@@ -39,8 +39,9 @@ public class SocketListenerService extends Service {
     private Socket socket;
     {
         try {
-            socket = IO.socket("http://" + host + ":8000");
-            Log.d("socket instance", "created");
+            String url = "http://" + host + ":8000";
+            socket = IO.socket(url);
+            Log.d("socket instance", "created " + url);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

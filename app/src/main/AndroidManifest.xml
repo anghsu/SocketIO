@@ -21,6 +21,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".LoginInfo"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.LOGININFO" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".SocketListenerService"
             android:enabled="true"
