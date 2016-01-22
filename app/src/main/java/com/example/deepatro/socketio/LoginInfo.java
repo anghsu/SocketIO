@@ -22,7 +22,6 @@ public class LoginInfo extends Activity {
     private String username;
     private SharedPreferences sp;
     Intent i;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +77,7 @@ public class LoginInfo extends Activity {
         sp = getSharedPreferences("sp", MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString(key, value);
+
         edit.commit();
     }
 
