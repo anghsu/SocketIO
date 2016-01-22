@@ -47,13 +47,16 @@ public class LoginInfo extends Activity {
                 LoadLogin();
                 Log.d("SAVED HOST", host);
                 Log.d("SAVED USER", username);
+
                 stopService(i);
                 startService(i);
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
         i = new Intent(this, SocketListenerService.class);
         startService(i);
+
 
     }
 
