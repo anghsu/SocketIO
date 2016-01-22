@@ -16,7 +16,9 @@ import android.widget.ListView;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 
@@ -94,7 +96,8 @@ public class MainActivity extends ActionBarActivity {
                 String topo_name = scan.next();
                 String event = scan.next();
                 String user = scan.next();
-                logArray.add(topo_name +" "+event+" "+user+" ");
+                String time_str = DateFormat.getDateTimeInstance().format(new Date(time));
+                logArray.add(topo_name +" was "+event+" at "+time_str);
             }
 
             return logArray;
