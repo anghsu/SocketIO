@@ -45,7 +45,7 @@ public class LoginInfo extends Activity {
             public void onClick(View v) {
                 //Save Settings
                 SaveLogin("Username", mNameText.getText().toString());
-                SaveLogin("Hostname", mHostname.getText().toString() + ".cisco.com");
+                SaveLogin("Hostname", mHostname.getText().toString());
                 LoadLogin();
                 Log.d("SAVED HOST", host);
                 Log.d("SAVED USER", username);

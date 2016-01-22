@@ -49,7 +49,7 @@ public class SocketListenerService extends Service {
 
     private void startSocket(){
         try {
-            String url = "http://" + host + ":8000";
+            String url = "http://" + host + ".cisco.com:8000";
             socket = IO.socket(url);
             Log.d("socket instance", "created " + url);
         } catch (URISyntaxException e) {
