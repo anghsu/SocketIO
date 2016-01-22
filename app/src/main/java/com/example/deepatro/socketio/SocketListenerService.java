@@ -18,7 +18,18 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Calendar;
+
+import static android.system.OsConstants.O_RDWR;
 
 public class SocketListenerService extends Service {
     private SharedPreferences sp;
@@ -27,17 +38,34 @@ public class SocketListenerService extends Service {
     private String user;
     private Socket socket;
 
+    File tempFile;
+    private final String TEMP_FILE_NAME = "laasng_notify.txt";
+    private String fileName = TEMP_FILE_NAME;
+
     public SocketListenerService() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("I am called", "called");
+        tempFile = new File( fileName);
 
         notifyId = 1;
-        user ="greggmi";
         sp = getSharedPreferences("sp", MODE_PRIVATE);
         host = sp.getString("Hostname", "");
+        user = sp.getString("Username", "");
         Log.d("Socket host", host);
+        Log.d("File name is", fileName);
+ /*       try{
+            if (!tempFile.exists()) {
+                tempFile.createNewFile();
+                tempFile.setWritable(true);
+                Log.d("File created", fileName);
+            }
+        }
+        catch(IOException e) {
+            Log.d("File exists", fileName);
+        }*/
         startSocket();
 
         Log.d("socket instance", "connecting");
@@ -74,6 +102,12 @@ public class SocketListenerService extends Service {
                 }
                 if (user.equals(user_name)) {
                     message = "Your topology, " + topo_name + ", has been " + event;
+                    Calendar c = Calendar.getInstance();
+                    long secs = c.getTimeInMillis();
+                    Log.i("seconds", Long.toString(secs));
+
+                    String detail = Long.toString(secs) + topo_name + event + user_name;
+                    writeIntoFile(fileName, detail);
                     sendNotification(android.R.drawable.ic_menu_view, "LaasNG", message);
                 }else{
                     Log.e("username not matching"+user, data.toString());
@@ -114,7 +148,38 @@ public class SocketListenerService extends Service {
 
     }
 
+    public void readFromFile(String fileName){
+        String strLine = "";
+        StringBuilder text = new StringBuilder();
+        try{
+            FileReader fReader = new FileReader(fileName);
+            BufferedReader breader = new BufferedReader(fReader);
+            while( (strLine=breader.readLine()) != null ){
+                Log.i("From file", strLine);
+                text.append(strLine+"/n");
 
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void writeIntoFile(String fileName, String detail){
+        FileWriter writer = null;
+        try{
+            BufferedOutputStream bwriter = new BufferedOutputStream(openFileOutput(fileName, Context.MODE_PRIVATE));
+            //writer = new FileWriter(fileName, true);
+            bwriter.write((detail+"\n").getBytes());
+            bwriter.flush();
+            bwriter.close();
+        }
+        catch (IOException e){
+            Log.d("File write", e.getMessage());
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
